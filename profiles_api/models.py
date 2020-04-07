@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings # 可以去找project底下的settings.py 內容
 
 
 class UserProfileManager(BaseUserManager):
@@ -46,7 +47,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """Retrieve full name of user"""
         return self.name
 
-
     def get_short_name(self):
         """Retrieve short name of user"""
         return self.name
@@ -54,3 +54,18 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Retrieve string representation of our user in python"""
         return self.email
+
+
+class ProfileFeedItem(models.Model):
+    """Profilestatus update"""
+    """連接兩個model用的"""
+    user_profile = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """"Return the model as a string"""
+        return self.status_text
